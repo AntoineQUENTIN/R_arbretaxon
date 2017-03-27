@@ -11,7 +11,7 @@ csv.url <- "http://services.sandre.eaufrance.fr/References/1.0.0/References.php?
 datataxon <-read.csv(csv.url,sep=";",header = T,encoding = "UTF-8")
 
 # 2. Liste des codes Taxons des espèces à dessiner
-#tmpCdTAxon <- data.frame(CdTAxon= c("866","1547","2010","1245","865"))
+tmpCdTAxon <- data.frame(CdTAxon= c("866","1547","2010","1245","865"))
 tmpCdTAxon <- data.frame(CdTAxon= c("2038", "2050", "866","2071" ,"2110" ,"2113", "2117","2125", "2133" ,"2137", "2167", "2177", "2193" ,"2203"))
 # 3. Recherche en cascade des codes Taxon Parents
 arbretaxonmerge <- data.frame()
@@ -34,8 +34,8 @@ for (j in 1:length(tmpCdTAxon$CdTAxon)){
 
 # 4. Restitution des branches taxons par espèce
 arbretaxonmerge <- subset(arbretaxonmerge,V3<16 )
-A <- matrix(NA,nrow=length(arbretaxonmerge$V1),ncol=9)
-A <- data.frame(A)
+A <- matrix(NA,nrow=length(arbretaxonmerge$V1),ncol=16)
+A <- data.frame(A); colnames(A )<-15:0
 A[1:length(unique(arbretaxonmerge$V1)),1] <- as.character(unique(arbretaxonmerge$V1))
 
 
@@ -51,10 +51,17 @@ for (j in 1:length(tmpCdTAxon$CdTAxon)){
     ii <- ii+1
   }
   arbretaxon <- subset(arbretaxon,V3<16 )
-  A[which(A[,1] == arbretaxon$V1[1]),1:length(arbretaxon$V1)] <- arbretaxon$V1
+  A[which(A[,1] == arbretaxon$V1[1]),which(names(A)%in%as.character(arbretaxon$V3))] <- arbretaxon$V1
+  
 }
 #On ne garde que ceux dont la chaine est complète
-A <- na.omit(A)
+A <- data.frame(A$`15`,A$`13`,A$`10`,A$`7`,A$`4`,A$`3`,A$`2`,A$`1`,A$`0`)
+delete.na <- function(DF, n=0) {
+  DF[rowSums(is.na(DF)) <= n,]
+}
+#J'autorise les lignes ou il y a au maximun 3 Na manquant
+A <- delete.na(A, 3)
+
 colnames(A)<- c("Espece","Genre","Famille","Ordre","sous-Classe","Classe","Super-Classe","Sous-Embranchement","Embranchement")
 # 5.1 Définition du niveau des noeuds
 A$pathString <- paste(A$Embranchement,A$Classe,A$Ordre,A$Famille,A$Genre,A$Espece,
@@ -69,3 +76,4 @@ text(x=60,y=length(A$Embranchement)+1,label="Classe",font = 2)
 text(x=40,y=length(A$Embranchement)+1,label="Famille",font = 2)
 text(x=20,y=length(A$Embranchement)+1,label="Genre",font = 2)
 text(x=0,y=length(A$Embranchement)+1,label="Espece",font = 2)
+

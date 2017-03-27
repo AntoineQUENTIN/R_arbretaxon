@@ -1,13 +1,15 @@
-
+#Package nécessaire:
 if(!require(data.tree)){  install.packages("data.tree");  require(data.tree)} 
 
 #Lecture de l'arbre taxonomique sur le site du SANDRE
+#http://mdm.sandre.eaufrance.fr/?q=mdm_sandre/treetax/htmlbranchearbre/0
+#Dictionnaire des données
+#http://sandre.eaufrance.fr/ftp/documents/fr/ddd/tax/2002-1/sandre_dictionnaire_TAX_2002-1.pdf
 csv.url <- "http://services.sandre.eaufrance.fr/References/1.0.0/References.php?CdReferentiel=TAX&Filter=++++%3CFilter%3E++++++%3CStatut%3E1%3C%2FStatut%3E++++++%3CStatut%3E0%3C%2FStatut%3E++++%3C%2FFilter%3E&request=getReferenceElements&version=1.0.0&service=References&outputSchema=http%3A%2F%2Fxml.sandre.eaufrance.fr%2Fscenario%2FReferences%2F1&outputFormat=sandre%2Fsimplexml"
 datataxon <-read.csv(csv.url,sep=";",header = T,encoding = "UTF-8")
 
-
+#Liste des codes Taxons des espèces à dessiner
 tmpCdTAxon <- data.frame(CdTAxon= c("2038", "2050", "2071" ,"2110" ,"2113", "2117","2125", "2133" ,"2137", "2167", "2177", "2193" ,"2203"))
-
 
 arbretaxonmerge <- data.frame()
 for (j in 1:length(tmpCdTAxon$CdTAxon)){
@@ -24,8 +26,7 @@ for (j in 1:length(tmpCdTAxon$CdTAxon)){
       if (j == 1){
         arbretaxonmerge <- arbretaxon
       }
-  
-  arbretaxonmerge <- merge(arbretaxonmerge,arbretaxon,all = T)
+    arbretaxonmerge <- merge(arbretaxonmerge,arbretaxon,all = T)
 }
 
 arbretaxonmerge <- subset(arbretaxonmerge,V3<16 )
@@ -56,13 +57,12 @@ Atree <- as.Node(A)
 
 
 
-
 plot(as.dendrogram(Atree), center = T, horiz = T,xlim=c(100,-50),xaxt ='n',yaxt = 'n')
 text(x=90,y=length(A$`0`)+1,label="Embranchement",font = 2)
 text(x=60,y=length(A$`0`)+1,label="Classe",font = 2)
 text(x=40,y=length(A$`0`)+1,label="Famille",font = 2)
 text(x=20,y=length(A$`0`)+1,label="Genre",font = 2)
-text(x=0,y=length(A$`0`)+1,label="Esp�ce",font = 2)
+text(x=0,y=length(A$`0`)+1,label="Espèce",font = 2)
 
 
 

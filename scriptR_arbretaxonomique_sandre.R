@@ -1,19 +1,19 @@
 #Package nécessaire:
 if(!require(data.tree)){  install.packages("data.tree");  require(data.tree)} 
 
-
+#Arbre du sandre
 #http://mdm.sandre.eaufrance.fr/?q=mdm_sandre/treetax/htmlbranchearbre/0
 #Dictionnaire des données
 #http://sandre.eaufrance.fr/ftp/documents/fr/ddd/tax/2002-1/sandre_dictionnaire_TAX_2002-1.pdf
 
-#Lecture des données taxonomiques sur le site du SANDRE
+# 1. Lecture des données taxonomiques sur le site du SANDRE
 csv.url <- "http://services.sandre.eaufrance.fr/References/1.0.0/References.php?CdReferentiel=TAX&Filter=++++%3CFilter%3E++++++%3CStatut%3E1%3C%2FStatut%3E++++++%3CStatut%3E0%3C%2FStatut%3E++++%3C%2FFilter%3E&request=getReferenceElements&version=1.0.0&service=References&outputSchema=http%3A%2F%2Fxml.sandre.eaufrance.fr%2Fscenario%2FReferences%2F1&outputFormat=sandre%2Fsimplexml"
 datataxon <-read.csv(csv.url,sep=";",header = T,encoding = "UTF-8")
 
-#Liste des codes Taxons des espèces à dessiner
+# 2. Liste des codes Taxons des espèces à dessiner
 tmpCdTAxon <- data.frame(CdTAxon= c("2038", "2050", "2071" ,"2110" ,"2113", "2117","2125", "2133" ,"2137", "2167", "2177", "2193" ,"2203"))
 
-#Recherche en cascade des codes Taxon Parents
+# 3. Recherche en cascade des codes Taxon Parents
 arbretaxonmerge <- data.frame()
 for (j in 1:length(tmpCdTAxon$CdTAxon)){
   arbretaxon <- data.frame()
@@ -32,7 +32,7 @@ for (j in 1:length(tmpCdTAxon$CdTAxon)){
     arbretaxonmerge <- merge(arbretaxonmerge,arbretaxon,all = T)
 }
 
-#Restitution des branches taxons par espèce
+# 4. Restitution des branches taxons par espèce
 arbretaxonmerge <- subset(arbretaxonmerge,V3<16 )
 A <- matrix(NA,nrow=length(arbretaxonmerge$V1),ncol=length(unique(arbretaxonmerge$V3)))
 A <- data.frame(A)
@@ -56,13 +56,13 @@ for (j in 1:length(tmpCdTAxon$CdTAxon)){
 
 A <- na.omit( A  )
 
-#Définition du niveau des ramifications
+# 5.1 Définition du niveau des noeuds
 A$pathString <- paste(A$`13`,A$`4`,A$`3`,A$`2`,A$`1`,A$`0`,
                     sep = "/")
-#Ramification de l'arbre					
+# 5.2 Noeuds de l'arbre					
 Atree <- as.Node(A)
 
-#Graphique
+# 6 . Graphique
 plot(as.dendrogram(Atree), center = T, horiz = T,xlim=c(100,-50),xaxt ='n',yaxt = 'n')
 text(x=90,y=length(A$`0`)+1,label="Embranchement",font = 2)
 text(x=60,y=length(A$`0`)+1,label="Classe",font = 2)

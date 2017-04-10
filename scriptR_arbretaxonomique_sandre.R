@@ -7,7 +7,7 @@ if(!require(data.tree)){  install.packages("data.tree");  require(data.tree)}
 #http://sandre.eaufrance.fr/ftp/documents/fr/ddd/tax/2002-1/sandre_dictionnaire_TAX_2002-1.pdf
 
 # 1. Lecture des données taxonomiques sur le site du SANDRE
-csv.url <- "http://services.sandre.eaufrance.fr/References/1.0.0/References.php?CdReferentiel=TAX&Filter=++++%3CFilter%3E++++++%3CStatut%3E1%3C%2FStatut%3E++++++%3CStatut%3E0%3C%2FStatut%3E++++%3C%2FFilter%3E&request=getReferenceElements&version=1.0.0&service=References&outputSchema=http%3A%2F%2Fxml.sandre.eaufrance.fr%2Fscenario%2FReferences%2F1&outputFormat=sandre%2Fsimplexml"
+csv.url <- "services.sandre.eaufrance.fr/References/1.3.0/References.php?CdReferentiel=APT&Filter=%3CFilter%3E%3CStatut%3E1%3C/Statut%3E%3CStatut%3E0%3C/Statut%3E%3C/Filter%3E&request=getReferenceElements&version=1.3.0&service=References&outputSchema=http://xml.sandre.eaufrance.fr/scenario/referentiel/3.1/sandre_sc_referentiel.xsd&outputFormat=sandre/simplexml"
 datataxon <-read.csv(csv.url,sep=";",header = T,encoding = "UTF-8")
 
 # 2. Liste des codes Taxons des espèces à dessiner
